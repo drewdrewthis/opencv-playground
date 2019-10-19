@@ -40,7 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // // schedule first one.
       // setTimeout(processVideo, 0);
-      let dst = cv.imread('dstCanvasInput');
 
       camShift(dst);
     };

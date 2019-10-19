@@ -1,5 +1,7 @@
-function camShift(dst = new cv.Mat()) {
+function camShift(dst) {
   let streaming = true;
+
+  console.log('Image data', dst);
 
   let video = document.getElementById('videoInput');
   let cap = new cv.VideoCapture(video);
@@ -68,7 +70,11 @@ function camShift(dst = new cv.Mat()) {
       cv.line(frame, pts[3], pts[0], [255, 0, 0, 255], 3);
 
       // Check that it's processing
-      cv.cvtColor(hsv, dst, cv.COLOR_RGBA2GRAY);
+      // cv.cvtColor(
+      //   new cv.Mat(video.height, video.width, cv.CV_8UC4),
+      //   frame,
+      //   cv.COLOR_RGBA2GRAY
+      // );
 
       cv.imshow('canvasOutput', frame);
 
