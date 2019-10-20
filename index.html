@@ -7,21 +7,26 @@
       src="https://webrtc.github.io/adapter/adapter-5.0.4.js"
       type="text/javascript"
     ></script>
-    <script src="utils.js"></script>
-    <script src="opencv.js"></script>
-    <script src="camShift.js"></script>
-    <script src="script.js"></script>
+    <script src="utils.js" type="text/javascript"></script>
+    <script src="opencv.js" type="text/javascript"></script>
+    <script src="camshift.js" type="text/javascript"></script>
+    <script src="script.js" type="text/javascript"></script>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <video id="videoInput" width="320" height="240"></video>
+    <video
+      id="videoInput"
+      width="320"
+      height="240"
+      preload
+      autoplay
+      muted
+      playsinline
+    ></video>
     <!-- <canvas id="canvasFrame" width="320" height="240"></canvas> -->
     <!-- <canvas id="srcCanvasInput" width="320" height="240"></canvas> -->
     <canvas id="dstCanvasInput" width="320" height="240"></canvas>
     <canvas id="canvasOutput" width="320" height="240"></canvas>
-
-    <script>
-      const utils = new Utils("errorMessage");
-    </script>
+    <p id="errorMessage"></p>
   </body>
 </html>
