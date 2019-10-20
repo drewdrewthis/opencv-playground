@@ -3,8 +3,55 @@ if (!window.ImageProcessors) {
   window.ImageProcessors = {};
 }
 
-window.ImageProcessors.CamShift = function camShift(_video, _outputCanvas) {
-  let video = document.getElementById('videoInput');
+function getRoiHist(roi) {
+  let hsvRoi = new cv.Mat();
+  cv.cvtColor(roi, hsvRoi, cv.COLOR_RGBA2RGB);
+  cv.cvtColor(hsvRoi, hsvRoi, cv.COLOR_RGB2HSV);
+
+  // let mask = new cv.Mat();
+  // let lowScalar = new cv.Scalar(30, 30, 0);
+  // let highScalar = new cv.Scalar(180, 180, 180);
+  // let low = new cv.Mat(hsvRoi.rows, hsvRoi.cols, hsvRoi.type(), lowScalar);
+  // let high = new cv.Mat(hsvRoi.rows, hsvRoi.cols, hsvRoi.type(), highScalar);
+  // cv.inRange(hsvRoi, low, high, mask);
+  // let roiHist = new cv.Mat();
+  // let hsvRoiVec = new cv.MatVector();
+  // hsvRoiVec.push_back(hsvRoi);
+  // cv.calcHist(hsvRoiVec, [0], mask, roiHist, [180], [0, 180]);
+  // cv.normalize(roiHist, roiHist, 0, 255, cv.NORM_MINMAX);
+
+  return hsvRoi
+}
+
+window.ImageProcessors.CamShift = function camShift(video, outputCanvas) {
+  const utils = new Utils("errorMessage");
+
+  let streaming = true;
+
+  let templateCanvas = document.getElementById('templateCanvasInput');
+  let templateCtx = templateCanvas.getContext("2d");
+  // Super-impose template on camera
+  let seedCanvas = document.getElementById('seedCanvas');
+  let seedContext = seedCanvas.getContext("2d");
+  let templateImageData = templateCtx.getImageData(
+    0,
+    0,
+    templateCanvas.width,
+    templateCanvas.height
+  );
+
+  const imposedTemplate = {
+    x: templateCanvas.width / 2,
+    y: templateCanvas.height / 2,
+    width: templateCanvas.width / 2,
+    height: templateCanvas.height / 2,
+  }
+
+  let seedMat = new cv.Mat(seedCanvas.height, seedCanvas.width, cv.CV_8UC4);
+
+  // // hardcode the initial location of window
+  // let trackWindow = new cv.Rect(...Object.values(imposedTemplate));
+
   let cap = new cv.VideoCapture(video);
 
   // take first frame of the video
@@ -16,6 +63,7 @@ window.ImageProcessors.CamShift = function camShift(_video, _outputCanvas) {
 
   // set up the ROI for tracking
   let roi = frame.roi(trackWindow);
+
   let hsvRoi = new cv.Mat();
   cv.cvtColor(roi, hsvRoi, cv.COLOR_RGBA2RGB);
   cv.cvtColor(hsvRoi, hsvRoi, cv.COLOR_RGB2HSV);
@@ -46,11 +94,13 @@ window.ImageProcessors.CamShift = function camShift(_video, _outputCanvas) {
   const FPS = 30;
   function processVideo() {
     try {
-      if (!streaming) {
-        // clean and stop.
-        frame.delete(); dst.delete(); hsvVec.delete(); roiHist.delete(); hsv.delete();
-        return;
-      }
+      cv.imshow('seedCanvas', frame);
+
+      seedContext.drawImage(
+        templateCanvas,
+        ...Object.values(imposedTemplate)
+      )
+
       let begin = Date.now();
 
       // start processing.
@@ -74,11 +124,11 @@ window.ImageProcessors.CamShift = function camShift(_video, _outputCanvas) {
       let delay = 1000 / FPS - (Date.now() - begin);
       setTimeout(processVideo, delay);
     } catch (err) {
+      // console.log(err)
       utils.printError(err);
     }
   };
 
   // schedule the first one.
   setTimeout(processVideo, 0);
-
 }
