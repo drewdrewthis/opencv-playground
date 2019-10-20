@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>CamShift Example</title>
     <!-- <link href="js_example_style.css" rel="stylesheet" type="text/css" /> -->
+    <script type="text/javascript" src="script.js"></script>
     <script type="text/javascript" src="camshift.js"></script>
   </head>
   <body>
@@ -31,6 +32,9 @@
           <td>
             <canvas id="canvasOutput" width="320" height="240"></canvas>
           </td>
+          <td>
+            <canvas id="canvasOutput2" width="320" height="240"></canvas>
+          </td>
           <td></td>
           <td></td>
         </tr>
@@ -43,6 +47,9 @@
           </td>
           <td></td>
           <td></td>
+        </tr>
+        <tr>
+          <canvas id="templateCanvasInput" width="320" height="240"></canvas>
         </tr>
       </table>
     </div>
@@ -67,7 +74,7 @@
             onVideoStarted();
           });
         } else {
-          videoInput.pause();
+          // videoInput.pause();
           videoInput.currentTime = 0;
           onVideoStopped();
         }

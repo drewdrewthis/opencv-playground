@@ -30,25 +30,4 @@ window.addEventListener("load", function () {
     templateCanvas.width,
     templateCanvas.height
   );
-
-  (function openCvReady() {
-    cv['onRuntimeInitialized'] = () => {
-      console.log('openCvReady!')
-      // https://docs.opencv.org/master/dd/d00/tutorial_js_video_display.html
-
-      // ImageProcessors.GrayScale(video, output)
-      ImageProcessors.CamShift(video, output)
-
-      // CamShift Stuff
-
-      // Get Template Image Mat
-
-      // let templateMat = cv.matFromImageData(templateImageData);
-      console.log('Image data', templateMat);
-
-      ImageProcessors.TemplateMatch(video, templateMat, output)
-
-      // camShift(templateMat);
-    };
-  })();
 });

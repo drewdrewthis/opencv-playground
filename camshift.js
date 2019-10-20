@@ -8,11 +8,19 @@ window.ImageProcessors.CamShift = function camShift(_video, _outputCanvas) {
   let cap = new cv.VideoCapture(video);
 
   // take first frame of the video
+  let vframe = new cv.Mat(video.height, video.width, cv.CV_8UC4);
   let frame = new cv.Mat(video.height, video.width, cv.CV_8UC4);
   cap.read(frame);
 
   // hardcode the initial location of window
-  let trackWindow = new cv.Rect(150, 60, 63, 125);
+  let trackWindow = new cv.Rect(
+    60,
+    60,
+    200,
+    100
+  );
+
+  console.log(trackWindow)
 
   // set up the ROI for tracking
   let roi = frame.roi(trackWindow);
@@ -69,6 +77,13 @@ window.ImageProcessors.CamShift = function camShift(_video, _outputCanvas) {
       cv.line(frame, pts[2], pts[3], [255, 0, 0, 255], 3);
       cv.line(frame, pts[3], pts[0], [255, 0, 0, 255], 3);
       cv.imshow('canvasOutput', frame);
+
+      // HSV output
+      cv.line(hsv, pts[0], pts[1], [255, 0, 0, 255], 3);
+      cv.line(hsv, pts[1], pts[2], [255, 0, 0, 255], 3);
+      cv.line(hsv, pts[2], pts[3], [255, 0, 0, 255], 3);
+      cv.line(hsv, pts[3], pts[0], [255, 0, 0, 255], 3);
+      cv.imshow('canvasOutput2', hsv);
 
       // schedule the next one.
       let delay = 1000 / FPS - (Date.now() - begin);
